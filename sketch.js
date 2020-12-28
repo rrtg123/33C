@@ -7,13 +7,15 @@ var engine, world;
 var box1, pig1,pig3;
 var backgroundImg,platform;
 var bird, slingshot;
+var bgImg
 
 var gameState = "onSling";
-var bg = "sprites/bg1.png";
+var bg3 = "sprites/bg1.png";
 var score = 0;
 
 function preload() {
     getBackgroundImg();
+    bgImg=loadImage(bg3)
 }
 
 function setup(){
@@ -47,14 +49,22 @@ function setup(){
 }
 
 function draw(){
-    if(backgroundImg)
+    if(backgroundImg){
         background(backgroundImg);
     
         noStroke();
         textSize(35)
         fill("white")
         text("Score  " + score, width-300, 50)
+    }
+    else{
+        background(bgImg);
     
+        noStroke();
+        textSize(35)
+        fill("white")
+        text("Score  " + score, width-300, 50)
+    }
     Engine.update(engine);
     //strokeWeight(4);
     box1.display();
@@ -93,13 +103,17 @@ function mouseReleased(){
 }
 
 function keyPressed(){
-    if(keyCode === 32){
-       // slingshot.attach(bird.body);
+    if(keyCode === 32&&gameState==="launched"){
+     slingshot.attach(bird.body);       
+     Matter.Body.setPosition(bird.body, {x:200, y:50})
+     gameState="onSling";
+     //emptying the array
+     bird.trajectory=[]
     }
 }
 
 async function getBackgroundImg(){
-    var response = await fetch("http://worldtimeapi.org/api/timezone/Asia/Kolkata");
+    var response = await fetch("https://worldtimeapi.org/api/timezone/Asia/Ahmedabad");
     var responseJSON = await response.json();
 
     var datetime = responseJSON.datetime;
